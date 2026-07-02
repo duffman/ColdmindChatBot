@@ -1,0 +1,6 @@
+{
+  "name": "Sandbox Chatbot",
+  "description": "A minimalist chatbot docked on the left, paired with an interactive browser preview and code editor tabbed interface on the right.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

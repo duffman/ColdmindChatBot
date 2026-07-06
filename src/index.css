@@ -6,14 +6,97 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-body {
-  font-family: var(--font-sans);
-  background-color: #020617; /* Slate 950 */
-  color: #f8fafc; /* Slate 50 */
-  overflow: hidden;
+:root {
+  --light-source: top-left;
+
+  /* app background — the darkest of the light surfaces */
+  --bg: oklch(96% 0.008 255);
+  /* raised surfaces, laddered by lightness (≈2–4% steps) */
+  --surface-1: oklch(97.5% 0.010 255);
+  --surface-2: oklch(99% 0.006 255);
+  --card: oklch(98.5% 0.008 255);
+
+  /* soft directional shadows */
+  --shadow-sm: 0 1px 2px -1px oklch(60% 0.03 262 / 0.18);
+  --shadow-md: 6px 8px 20px -12px oklch(60% 0.03 262 / 0.25);
+  --hi: -6px -6px 16px -10px oklch(100% 0 0 / 0.85);
+
+  --divider: oklch(20% 0.02 262 / 0.10);
+
+  --text: oklch(28% 0.02 262);
+  --text-soft: oklch(48% 0.02 262);
+  --text-meta: oklch(64% 0.02 262);
+  --accent: oklch(62% 0.16 262);
+  --accent-hover: oklch(65% 0.18 262);
+
+  /* alpha-transparent chrome details (rule 8) */
+  --border: oklch(20% 0.02 262 / 0.10);
+  --inner-hi: inset 0 1px 0 oklch(100% 0 0 / 0.6);
+  --focus-ring: 0 0 0 2px oklch(62% 0.16 262 / 0.55);
+  --radius: 12px;
+
+  /* toolbar shadow — hard-capped (rule 7) */
+  --toolbar-shadow: 0 2px 3px oklch(0% 0 0 / 0.18);
+
+  /* per-region surfaces — each layout region distinct (rules 6–7) */
+  --region-main: linear-gradient(135deg, oklch(99% 0.005 255), oklch(95% 0.022 255));
+  --region-toolbar: linear-gradient(180deg, oklch(97% 0.012 262), oklch(95% 0.016 262));
+  --region-sidebar: linear-gradient(180deg, oklch(94% 0.010 262), oklch(92.5% 0.014 262));
+  --region-inspector: linear-gradient(180deg, oklch(95% 0.008 262), oklch(93.5% 0.012 262));
+  --region-command: radial-gradient(120% 140% at 50% 0%, oklch(96% 0.014 262), oklch(93% 0.018 262));
+  --region-status: linear-gradient(180deg, oklch(93% 0.008 262), oklch(91.5% 0.010 262));
+
+  /* selected nav item — not a flat rectangle (rule 7) */
+  --nav-active: linear-gradient(90deg, oklch(62% 0.16 262 / 0.16), oklch(62% 0.16 262 / 0.04));
+  --nav-rail: oklch(62% 0.16 262);
 }
 
-/* Custom scrollbars for a clean workspace look */
+.dark {
+  --light-source: top-left;
+
+  --bg: oklch(12% 0.015 255);
+  --surface-1: oklch(14.5% 0.018 255);
+  --surface-2: oklch(16.5% 0.015 255);
+  --card: oklch(15.5% 0.012 255);
+
+  --shadow-sm: 0 1px 2px -1px oklch(0% 0 0 / 0.4);
+  --shadow-md: 6px 8px 20px -12px oklch(0% 0 0 / 0.6);
+  --hi: -6px -6px 16px -10px oklch(100% 0 0 / 0.08);
+
+  --divider: oklch(100% 0 0 / 0.08);
+
+  --text: oklch(92% 0.01 255);
+  --text-soft: oklch(75% 0.015 255);
+  --text-meta: oklch(55% 0.015 255);
+  --accent: oklch(65% 0.16 255);
+  --accent-hover: oklch(68% 0.18 255);
+
+  --border: oklch(100% 0 0 / 0.08);
+  --inner-hi: inset 0 1px 0 oklch(100% 0 0 / 0.08);
+  --focus-ring: 0 0 0 2px oklch(65% 0.16 255 / 0.55);
+  --radius: 12px;
+
+  --toolbar-shadow: 0 2px 3px oklch(0% 0 0 / 0.35);
+
+  --region-main: linear-gradient(135deg, oklch(16.5% 0.015 255), oklch(11% 0.015 255));
+  --region-toolbar: linear-gradient(180deg, oklch(15.5% 0.018 255), oklch(13.5% 0.018 255));
+  --region-sidebar: linear-gradient(180deg, oklch(13.5% 0.018 255), oklch(11.5% 0.018 255));
+  --region-inspector: linear-gradient(180deg, oklch(14% 0.015 255), oklch(12% 0.015 255));
+  --region-command: radial-gradient(120% 140% at 50% 0%, oklch(15% 0.018 255), oklch(11% 0.018 255));
+  --region-status: linear-gradient(180deg, oklch(12% 0.015 255), oklch(10.5% 0.015 255));
+
+  --nav-active: linear-gradient(90deg, oklch(65% 0.16 255 / 0.2), oklch(65% 0.16 255 / 0.05));
+  --nav-rail: oklch(65% 0.16 255);
+}
+
+body {
+  font-family: var(--font-sans);
+  overflow: hidden;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Custom scrollbars that adapt perfectly to light/dark themes */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -22,9 +105,83 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b; /* Slate 800 */
+  background: var(--divider);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155; /* Slate 700 */
+  background: var(--text-meta);
+}
+
+/* Diagonal-lit main content area (Rule 4) */
+.main-surface-light {
+  background: var(--region-main);
+  box-shadow:
+    -10px -10px 28px -16px oklch(100% 0 0 / 0.9),      /* top-left highlight */
+     12px  14px 36px -18px oklch(62% 0.03 262 / 0.28); /* bottom-right cast   */
+}
+
+.main-surface-dark {
+  background: var(--region-main);
+  box-shadow:
+    -10px -10px 28px -16px oklch(100% 0 0 / 0.12),      /* top-left highlight */
+     12px  14px 36px -18px oklch(0% 0 0 / 0.7); /* bottom-right cast   */
+}
+
+/* Interactive Component State Models (Rule 10) */
+.btn-lit {
+  background: linear-gradient(160deg, var(--surface-2), var(--card));
+  box-shadow: var(--shadow-sm), var(--hi);
+  border: 1px solid var(--divider);
+  transition: box-shadow 0.11s cubic-bezier(0.16, 1, 0.3, 1), background 0.11s ease, transform 0.11s ease;
+  color: var(--text);
+}
+
+.btn-lit:hover:not(:disabled) {
+  background: linear-gradient(160deg, 
+    oklch(from var(--surface-2) calc(l + 0.015) c h),
+    oklch(from var(--card) calc(l + 0.015) c h)
+  );
+  box-shadow: var(--shadow-md), var(--hi);
+  transform: translateY(-0.5px);
+}
+
+.btn-lit:active:not(:disabled) {
+  background: linear-gradient(160deg,
+    oklch(from var(--card) calc(l - 0.02) c h),
+    oklch(from var(--surface-2) calc(l - 0.02) c h)
+  );
+  box-shadow:
+    inset 1px 1px 2px oklch(60% 0.03 262 / 0.22),
+    inset -1px -1px 1px oklch(100% 0 0 / 0.5);
+  transform: translateY(0.5px);
+}
+
+.btn-lit:disabled {
+  background: oklch(from var(--surface-1) l calc(c * 0.3) h);
+  box-shadow: none;
+  color: var(--text-meta);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Numerals optical alignment styling (Rule 11) */
+.num-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Skeleton loader Shimmer reflecting top-left -> bottom-right Sweep (Rule 13) */
+.shimmer-bg {
+  background: linear-gradient(
+    135deg,
+    var(--surface-1) 25%,
+    var(--surface-2) 50%,
+    var(--surface-1) 75%
+  );
+  background-size: 400% 400%;
+  animation: shimmer-animation 1.8s ease-in-out infinite;
+}
+
+@keyframes shimmer-animation {
+  0% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
 }
